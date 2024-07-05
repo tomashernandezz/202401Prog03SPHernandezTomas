@@ -1,0 +1,146 @@
+/* styles.css */
+
+/* Estilo general para el contenedor del formulario */
+#FormDatos {
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Estilo para los encabezados del formulario */
+#FormDatos h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* Estilo para la tabla de empleados/clientes */
+#tabla_empleados_clientes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+/* Estilo para las celdas de la tabla */
+#tabla_empleados_clientes th, #tabla_empleados_clientes td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Estilo para los encabezados de la tabla */
+#tabla_empleados_clientes th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Estilo para los botones en la tabla */
+#tabla_empleados_clientes .modificar, #tabla_empleados_clientes .eliminar {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+}
+
+#tabla_empleados_clientes .modificar {
+    background-color: #2196F3;
+}
+
+#tabla_empleados_clientes .eliminar {
+    background-color: #f44336;
+}
+
+/* Estilo para el botón de agregar componente */
+#RegistrarABM {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el contenedor de ABM */
+#abm {
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: none;
+}
+
+/* Estilo para los encabezados del contenedor ABM */
+#abm h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* Estilo para las etiquetas dentro del contenedor ABM */
+#abm label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Estilo para los inputs y select dentro del contenedor ABM */
+#abm input[type="text"], #abm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Estilo para los botones en el contenedor ABM */
+#abm button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#btnAgregarRegistro {
+    background-color: #4CAF50;
+    margin-right: 10px;
+}
+
+#cancelar {
+    background-color: #f44336;
+}
+
+
+#spinnerContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegúrate de que el spinner esté por encima de otros elementos */
+    display: none; /* Oculto por defecto */
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border: 0.4em solid #ddd;
+    border-top: 0.4em solid #007bff; /* Color del spinner */
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
