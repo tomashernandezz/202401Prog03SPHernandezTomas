@@ -19,8 +19,6 @@ class Persona {
     }
 }
 
-
-// Clase Empleado (hereda de Persona)
 class Ciudadano extends Persona {
 constructor(id, nombre, apellido, fechaNacimiento, dni) {
     super(id, nombre, apellido, fechaNacimiento);
@@ -40,7 +38,6 @@ toJson() {
 }
 }
 
-// Clase Cliente (hereda de Persona)
 class Extranjero extends Persona {
 constructor(id, nombre, apellido, fechaNacimiento, paisOrigen) {
     super(id, nombre, apellido, fechaNacimiento);
@@ -200,19 +197,69 @@ document.addEventListener("DOMContentLoaded", function() {
 
             btnModificar.onclick = () => {
                 mostrarFormularioABM("Modificar", persona);
+                document.getElementById("btnAgregarRegistro").textContent = "Modificar"
             };
 
             btnEliminar.onclick = () => {
                 mostrarFormularioABM("Eliminar", persona);
+                document.getElementById("btnAgregarRegistro").textContent = "Eliminar"
             };
         });
+    }
+
+    async function modificarElemento(id) {
+        const data = obtenerDatosFormulario();
+        const index = personasArray.findIndex(persona => persona.id === id);
+        if (index !== -1) {
+            mostrarSpinner();
+
+            try {
+                const response = await fetch('https://examenesutn.vercel.app/api/PersonaCiudadanoExtranjero', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        nombre: data.nombre,
+                        apellido: data.apellido,
+                        fechaNacimiento: data.fechaNacimiento,
+                        ...(data.dni ? { dni: data.dni } : { paisOrigen: data.paisOrigen })
+                    })
+                });
+
+                if (response.status === 200) {
+                    if (data.dni !== undefined) {
+                        personasArray[index] = new Ciudadano(id, data.nombre, data.apellido, data.fechaNacimiento, data.dni);
+                    } else {
+                        personasArray[index] = new Extranjero(id, data.nombre, data.apellido, data.fechaNacimiento, data.paisOrigen);
+                    }
+                    mostrarDatosEnTabla();
+                    mostrarFormularioLista();
+                } else {
+                    alert("No se pudo realizar la operación.");
+                    mostrarFormularioLista();
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert("Error al modificar el elemento.");
+            } finally {
+                ocultarSpinner();
+            }
+        } else {
+            alert("Elemento no encontrado para modificar.");
+            return Promise.reject(new Error("Elemento no encontrado para modificar."));
+        }
     }
 
     cargarDatosDesdeAPI();
 
     document.getElementById("RegistrarABM").onclick = () => {
         mostrarFormularioABM("Alta");
+        document.getElementById("btnAgregarRegistro").textContent = "Agregar";
     };
+
+
 
     function mostrarFormularioABM(accion, persona = {}) {
         document.getElementById("FormDatos").style.display = "none";
@@ -220,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("IDinput").value = persona.id || "";
         document.getElementById("Nombreinput").value = persona.nombre || "";
         document.getElementById("Apellidoinput").value = persona.apellido || "";
-        document.getElementById("Edadinput").value = persona.edad || "";
+        document.getElementById("Edadinput").value = persona.fechaNacimiento || "";
         document.getElementById("opcionesinput").value = persona.dni ? "Ciudadano" : "Extranjero";
         document.getElementById("DNIinput").value = persona.dni || "";
         document.getElementById("PaisOrigeninput").value = persona.paisOrigen || "";
@@ -245,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (accion === "Alta" || accion === "Modificar") {
                 if (validarFormulario()) {
                     if (accion === "Alta") {
-                        agregarElemento().then(()=>
+                        addElement().then(()=>
                         {
                             ocultarSpinner();
                             mostrarFormularioLista();
@@ -259,7 +306,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 }
             } else if (accion === "Eliminar") {
-                await eliminarElemento(persona.id);
+                await deleteElement(persona.id);
             }
         };
 
@@ -273,7 +320,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("abm").style.display = "none";
     }
 
-    function agregarElemento() {
+    function addElement() {
         mostrarSpinner();
         const data = obtenerDatosFormulario();
         delete data.id; 
@@ -312,51 +359,8 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
-    
 
-
-    /*function modificarElemento(id) {
-        const data = obtenerDatosFormulario();
-        const index = personasArray.findIndex(persona => persona.id === id);
-    
-        if (index !== -1) {
-            mostrarSpinner();
-    
-            fetch(`https://examenesutn.vercel.app/api/PersonaCiudadanoExtranjero?id=${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Error al modificar el elemento.");
-                }
-            })
-            .then(() => {
-                if (data.paisOrigen !== undefined) {
-                    personasArray[index] = new Ciudadano(id, data.nombre, data.apellido, data.fechaNacimiento, data.dni);
-                } else {
-                    personasArray[index] = new Extranjero(id, data.nombre, data.apellido, data.fechaNacimiento, data.paisOrigen);
-                }
-                mostrarDatosEnTabla();
-                mostrarFormularioLista();
-            })
-            .catch(error => {
-                alert(error.message);
-            })
-            .finally(() => {
-                ocultarSpinner();
-            });
-        } else {
-            alert("Elemento no encontrado para modificar.");
-        }
-    }*/
-
-    async function eliminarElemento(id) {
+    async function deleteElement(id) {
         try {
             mostrarSpinner();
             const response = await fetch(`https://examenesutn.vercel.app/api/PersonaCiudadanoExtranjero`, {
@@ -373,6 +377,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 mostrarFormularioLista();
             } else {
                 alert("No es posible eliminar el ID 666");
+                mostrarDatosEnTabla();
+                mostrarFormularioLista();
             }
         } catch (error) {
             alert("Error al eliminar el elemento.");
