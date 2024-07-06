@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    async function modificarElemento(id) {
+    async function modifyElement(id) {
         const data = obtenerDatosFormulario();
         const index = personasArray.findIndex(persona => persona.id === id);
         if (index !== -1) {
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             mostrarFormularioLista();
                         })
                     } else if (accion === "Modificar") {
-                        modificarElemento(persona.id).then(()=>
+                        modifyElement(persona.id).then(()=>
                         {
                             ocultarSpinner();
                             mostrarFormularioLista();
